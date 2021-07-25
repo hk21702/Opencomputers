@@ -40,7 +40,7 @@ end
 
 local function updateValues()
     energy = REACTOR.getEnergyChange()
-    reactor_state = REACTOR.isReactorOn()
+    reactor_state = REACTOR.isProcessing()
     currentHeat = REACTOR.getHeatLevel()
     cells = REACTOR.getNumberOfCells()
 
