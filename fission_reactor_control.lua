@@ -65,7 +65,7 @@ local function updateMain()
     print("\n Status:")
     if (currentHeat > max_heat / 2) then
         REACTOR.deactivate()
-        computer.beep(30, 5)
+        computer.beep(300, 5)
         print("Emergency Heat Shutdown")
     elseif (energy > max_energy * MAXENERGYRATIO) then
         REACTOR.deactivate()
@@ -84,4 +84,4 @@ if initialize() then
     until event.pull() == 'interrupted'
     REACTOR.deactivate()
 end
-computer.beep(30, 5)
+computer.beep(300, 2)
