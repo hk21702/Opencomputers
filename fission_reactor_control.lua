@@ -2,7 +2,7 @@ local term = require ('term')
 local component = require ('component')
 local event = require ('event')
 local computer = require('computer')
-local reactor = component.nc_fission_reactor
+local reactor
 
 local reactor_state = false
 local energy = 0
@@ -18,6 +18,15 @@ MAXENERGYRATIO = 0.8
 local function initialize()
     term.clear()
     print("Initializing...")
+    computer.beep()
+
+    if not component.isAvailable("nc_fission_reactor") then
+        print("Reactor not connected. Please connect the computer to the fission reactor.")
+        return false
+    end
+
+    reactor = component.nc_fission_reactor
+
     reactor.forceUpdate()
     if reactor.isComplete() then
         return true
@@ -51,27 +60,26 @@ local function updateValues()
 end
 
 local function updateMain()
+    print("\n Status:")
     if (currentHeat > max_heat / 2) then
-        computer.beep(30, 5)
         reactor.deactivate()
+        computer.beep(30, 5)
         print("Emergency Heat Shutdown")
     elseif (energy > max_energy * MAXENERGYRATIO) then
-        computer.beep()
         reactor.deactivate()
         print("Excess Energy")
     else
+        print("Nominal")
         reactor.activate()
     end
 end
 
 ---Program Start
-computer.beep()
-
-initialize()
-
-repeat
-updateValues()
-updateMain()
-until event.pull() == 'interrupted'
+if initialize() then
+    repeat
+        updateValues()
+        updateMain()
+    until event.pull() == 'interrupted'
+    reactor.deactivate()
+end
 computer.beep(30, 5)
-reactor.deactivate()
