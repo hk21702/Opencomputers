@@ -2,10 +2,9 @@ local term = require ('term')
 local component = require ('component')
 local event = require ('event')
 local computer = require('computer')
-local reactor
 
-local max_energy
-local max_heat
+local max_energy = 0
+local max_heat = 0
 
 local reactor_state = false
 local energy = 0
@@ -25,25 +24,25 @@ local function initialize()
         return false
     end
 
-    reactor = component.nc_fission_reactor
+    REACTOR = component.nc_fission_reactor
 
-    max_energy = reactor.getMaxEnergyStored()
-    max_heat = reactor.getMaxHeatLevel()
+    max_energy = REACTOR.getMaxEnergyStored()
+    max_heat = REACTOR.getMaxHeatLevel()
 
-    reactor.forceUpdate()
-    if reactor.isComplete() then
+    REACTOR.forceUpdate()
+    if REACTOR.isComplete() then
         return true
     else
-        print(reactor.getProblem())
+        print(REACTOR.getProblem())
         return false
     end
 end
 
 local function updateValues()
-    energy = reactor.getEnergyChange()
-    reactor_state = reactor.isReactorOn()
-    currentHeat = reactor.getHeatLevel()
-    cells = reactor.getNumberOfCells()
+    energy = REACTOR.getEnergyChange()
+    reactor_state = REACTOR.isReactorOn()
+    currentHeat = REACTOR.getHeatLevel()
+    cells = REACTOR.getNumberOfCells()
 
     term.clear()
     if (reactor_state) then
@@ -65,15 +64,15 @@ end
 local function updateMain()
     print("\n Status:")
     if (currentHeat > max_heat / 2) then
-        reactor.deactivate()
+        REACTOR.deactivate()
         computer.beep(30, 5)
         print("Emergency Heat Shutdown")
     elseif (energy > max_energy * MAXENERGYRATIO) then
-        reactor.deactivate()
+        REACTOR.deactivate()
         print("Excess Energy")
     else
         print("Nominal")
-        reactor.activate()
+        REACTOR.activate()
     end
 end
 
@@ -83,6 +82,6 @@ if initialize() then
         updateValues()
         updateMain()
     until event.pull() == 'interrupted'
-    reactor.deactivate()
+    REACTOR.deactivate()
 end
 computer.beep(30, 5)
