@@ -4,13 +4,13 @@ local event = require ('event')
 local computer = require('computer')
 local reactor
 
+local max_energy
+local max_heat
+
 local reactor_state = false
 local energy = 0
 local currentHeat = 0
 local cells = 0
-
-local max_energy = reactor.getMaxEnergyStored()
-local max_heat = reactor.getMaxHeatLevel()
 
 -- CONFIGURATION --
 MAXENERGYRATIO = 0.8
@@ -26,6 +26,9 @@ local function initialize()
     end
 
     reactor = component.nc_fission_reactor
+
+    max_energy = reactor.getMaxEnergyStored()
+    max_heat = reactor.getMaxHeatLevel()
 
     reactor.forceUpdate()
     if reactor.isComplete() then
