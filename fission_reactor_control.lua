@@ -3,6 +3,8 @@ local component = require ('component')
 local event = require ('event')
 local computer = require('computer')
 
+REACTOR = component.nc_fission_reactor or nil
+
 local max_energy = 0
 local max_heat = 0
 
@@ -19,12 +21,10 @@ local function initialize()
     print("Initializing...")
     computer.beep()
 
-    if not component.isAvailable("nc_fission_reactor") then
+    if REACTOR == nil then
         print("Reactor not connected. Please connect the computer to the fission reactor.")
         return false
     end
-
-    REACTOR = component.nc_fission_reactor
 
     max_energy = REACTOR.getMaxEnergyStored()
     max_heat = REACTOR.getMaxHeatLevel()
