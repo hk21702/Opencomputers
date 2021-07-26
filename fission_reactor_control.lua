@@ -78,10 +78,10 @@ end
 
 ---Program Start
 if initialize() then
-    repeat
+    while true do
         updateValues()
         updateMain()
-    until event.pull() == 'interrupted'
+    end
     REACTOR.deactivate()
 end
 computer.beep(300, 2)
